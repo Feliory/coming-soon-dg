@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Western Suburbs Coming Soon Dashboard</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #5f6b7a;
+    --brand: #1f4e78;
+    --brand-2: #2e75b6;
+    --accent: #c9302c;
+    --green: #4f8a3d;
+    --amber: #b07b00;
+    --line: #e3e6eb;
+    --hover: #f0f5fa;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.5; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 22px 80px; }
+  header.top { border-bottom: 3px solid var(--brand); padding-bottom: 18px; margin-bottom: 22px; }
+  header.top h1 { margin: 0 0 6px; font-size: 26px; color: var(--brand); letter-spacing: -0.01em; }
+  header.top .sub { color: var(--muted); font-size: 14px; }
+  header.top .meta { color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+  h2 { font-size: 19px; color: var(--brand); margin: 32px 0 6px; letter-spacing: -0.01em; }
+  h2 .pill { display: inline-block; font-size: 11px; vertical-align: middle; margin-left: 8px;
+    background: var(--brand); color: white; padding: 2px 8px; border-radius: 99px; letter-spacing: 0.04em; }
+  .lede { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+
+  /* Daily routine */
+  .routine ol { margin: 0; padding-left: 22px; }
+  .routine li { margin: 8px 0; }
+  .routine .time { font-size: 12px; color: var(--muted); margin-left: 6px; }
+  .routine a.button { display: inline-block; margin-left: 6px; padding: 2px 10px;
+    background: var(--brand); color: white; border-radius: 5px; text-decoration: none; font-size: 12px; }
+  .routine a.button:hover { background: var(--brand-2); }
+
+  /* City x source grid */
+  .grid { width: 100%; border-collapse: separate; border-spacing: 0;
+    background: white; border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .grid th, .grid td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--line);
+    vertical-align: middle; font-size: 14px; }
+  .grid th { background: var(--brand); color: white; font-weight: 600; font-size: 13px;
+    letter-spacing: 0.02em; }
+  .grid th.cityhead { background: #f0f5fa; color: var(--brand); }
+  .grid tr:last-child td { border-bottom: 0; }
+  .grid tr:hover td { background: var(--hover); }
+  .grid td.city { font-weight: 600; color: var(--ink); background: #f0f5fa; }
+  .grid td.city .zip { display: block; color: var(--muted); font-weight: 400; font-size: 12px; margin-top: 2px; }
+  .grid a { color: var(--brand); text-decoration: none; font-weight: 500; }
+  .grid a:hover { text-decoration: underline; color: var(--brand-2); }
+  .grid a.go { display: inline-block; padding: 6px 10px; border: 1px solid var(--brand);
+    border-radius: 6px; font-size: 13px; }
+  .grid a.go:hover { background: var(--brand); color: white; text-decoration: none; }
+
+  /* Brokerage section */
+  .broker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+  .broker { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .broker h3 { margin: 0 0 4px; font-size: 15px; color: var(--brand); }
+  .broker .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px;
+    background: #eaf3ec; color: var(--green); margin-bottom: 8px; letter-spacing: 0.02em; }
+  .broker .tag.amber { background: #fdf3df; color: var(--amber); }
+  .broker .tag.red { background: #fbe4e3; color: var(--accent); }
+  .broker p { margin: 6px 0; font-size: 13px; color: var(--muted); }
+  .broker .links { margin-top: 8px; }
+  .broker .links a { display: inline-block; margin: 3px 6px 3px 0; padding: 5px 10px;
+    border: 1px solid var(--line); border-radius: 5px; font-size: 12px; color: var(--brand);
+    text-decoration: none; background: var(--bg); }
+  .broker .links a:hover { border-color: var(--brand); background: white; }
+
+  /* Caveats / methodology */
+  .callout { background: #fff7e0; border-left: 4px solid var(--amber); padding: 12px 16px;
+    border-radius: 6px; margin: 12px 0; font-size: 13px; color: #4a3a00; }
+  .callout strong { color: #4a3a00; }
+  .ix { background: #fbe4e3; border-left: 4px solid var(--accent); padding: 12px 16px;
+    border-radius: 6px; margin: 12px 0; font-size: 13px; color: #5a1814; }
+
+  .alerts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .alerts .card { padding: 14px 16px; }
+  .alerts h3 { margin: 0 0 6px; font-size: 14px; color: var(--brand); }
+  .alerts p, .alerts ol { font-size: 13px; color: var(--ink); margin: 4px 0; }
+  .alerts ol { padding-left: 20px; }
+
+  footer { margin-top: 40px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line);
+    padding-top: 16px; }
+  footer a { color: var(--muted); }
+
+  /* Curator + share */
+  .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    flex-wrap: wrap; margin-bottom: 12px; }
+  .curator { font-size: 13px; color: var(--muted); }
+  .curator strong { color: var(--ink); }
+  .curator a { color: var(--brand); text-decoration: none; }
+  .share-btn { background: var(--brand); color: white; border: none; padding: 8px 14px;
+    border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;
+    font-family: inherit; display: inline-flex; align-items: center; gap: 6px; }
+  .share-btn:hover { background: var(--brand-2); }
+  .share-btn.copied { background: var(--green); }
+  .share-btn svg { width: 14px; height: 14px; }
+
+  /* Small screens */
+  @media (max-width: 640px) {
+    .grid th, .grid td { padding: 8px 6px; font-size: 12px; }
+    h2 { font-size: 17px; }
+    header.top h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="curator">Curated by <strong>Ryan Brody</strong>, MRJ CPA &nbsp;&middot;&nbsp; <a href="mailto:ryan.brody@mrj-cpa.com">ryan.brody@mrj-cpa.com</a></div>
+    <button class="share-btn" id="shareBtn" type="button" onclick="copyShareLink()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span id="shareBtnText">Copy share link</span>
+    </button>
+  </div>
+
+  <header class="top">
+    <h1>Western Suburbs Coming Soon &amp; Pre-Market Dashboard</h1>
+    <div class="sub">Downers Grove + Westmont + Hinsdale + Clarendon Hills + Lisle + Woodridge &nbsp;&middot;&nbsp; Target price: $400K&ndash;$1.5M</div>
+    <div class="meta">A daily monitoring hub for publicly accessible &ldquo;Coming Soon&rdquo; and pre-market listings. True pocket listings are not in any public feed &mdash; see the <a href="#not-public" style="color:var(--brand)">What&rsquo;s NOT here</a> section for how to access those.</div>
+  </header>
+
+  <!-- DAILY ROUTINE -->
+  <section class="card routine">
+    <h2 style="margin-top:0">Daily 5-minute monitoring routine</h2>
+    <p class="lede">Open these four links each morning. Anything new on Compass Exclusives or Zillow Coming Soon is your fastest signal.</p>
+    <ol>
+      <li><strong>Compass Coming Soon + Compass Exclusives</strong> (the public slice of Compass&rsquo;s private exclusives) <a class="button" href="https://www.compass.com/homes-for-sale/downers-grove-township-dupage-county-il/price=400000-1500000/listing-type=coming-soon,exclusive/" target="_blank" rel="noopener">Open</a><span class="time">~60 sec</span></li>
+      <li><strong>Zillow Coming Soon &mdash; Downers Grove</strong> <a class="button" href="https://www.zillow.com/downers-grove-il/coming-soon/" target="_blank" rel="noopener">Open</a><span class="time">~60 sec</span></li>
+      <li><strong>Realtor.com Coming Soon &mdash; DG area</strong> <a class="button" href="https://www.realtor.com/realestateandhomes-search/Downers-Grove_IL/type-coming-soon" target="_blank" rel="noopener">Open</a><span class="time">~60 sec</span></li>
+      <li><strong>Glover Team &mdash; published &ldquo;Private Listing&rdquo; page</strong> (one of the few local teams that publishes their off-market) <a class="button" href="https://thegloverteam.com/properties/downers-grove-private-listing-1" target="_blank" rel="noopener">Open</a><span class="time">~30 sec</span></li>
+    </ol>
+  </section>
+
+  <!-- PUBLIC AGGREGATORS GRID -->
+  <h2>Public aggregators &mdash; Coming Soon by city <span class="pill">Sites x Cities</span></h2>
+  <p class="lede">Each link opens that city&rsquo;s Coming Soon page. After clicking, apply the <strong>$400K&ndash;$1.5M</strong> price filter once and bookmark the result. (Trying to bake the price into every URL is fragile because each site changes its filter syntax.)</p>
+
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="cityhead">City</th>
+        <th>Zillow</th>
+        <th>Redfin</th>
+        <th>Realtor.com</th>
+        <th>Homes.com</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="city">Downers Grove<span class="zip">60515, 60516</span></td>
+        <td><a class="go" href="https://www.zillow.com/downers-grove-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.redfin.com/city/5322/IL/Downers-Grove/filter/include=coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.realtor.com/realestateandhomes-search/Downers-Grove_IL/type-coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.homes.com/downers-grove-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+      </tr>
+      <tr>
+        <td class="city">Westmont<span class="zip">60559</span></td>
+        <td><a class="go" href="https://www.zillow.com/westmont-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.redfin.com/city/22019/IL/Westmont/filter/include=coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.realtor.com/realestateandhomes-search/Westmont_IL/type-coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.homes.com/westmont-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+      </tr>
+      <tr>
+        <td class="city">Hinsdale<span class="zip">60521, 60522</span></td>
+        <td><a class="go" href="https://www.zillow.com/hinsdale-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.redfin.com/city/8665/IL/Hinsdale/filter/include=coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.realtor.com/realestateandhomes-search/Hinsdale_IL/type-coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.homes.com/hinsdale-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+      </tr>
+      <tr>
+        <td class="city">Clarendon Hills<span class="zip">60514</span></td>
+        <td><a class="go" href="https://www.zillow.com/clarendon-hills-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.redfin.com/city/3837/IL/Clarendon-Hills/filter/include=coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.realtor.com/realestateandhomes-search/Clarendon-Hills_IL/type-coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.homes.com/clarendon-hills-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+      </tr>
+      <tr>
+        <td class="city">Lisle<span class="zip">60532</span></td>
+        <td><a class="go" href="https://www.zillow.com/lisle-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.redfin.com/city/11071/IL/Lisle/filter/include=coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.realtor.com/realestateandhomes-search/Lisle_IL/type-coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.homes.com/lisle-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+      </tr>
+      <tr>
+        <td class="city">Woodridge<span class="zip">60517</span></td>
+        <td><a class="go" href="https://www.zillow.com/woodridge-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.redfin.com/city/22790/IL/Woodridge/filter/include=coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.realtor.com/realestateandhomes-search/Woodridge_IL/type-coming-soon" target="_blank" rel="noopener">Coming Soon</a></td>
+        <td><a class="go" href="https://www.homes.com/woodridge-il/coming-soon/" target="_blank" rel="noopener">Coming Soon</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Note on link freshness:</strong> Each site occasionally renames URL paths. If a link 404s, go to the site&rsquo;s main page, search the city, and apply the &ldquo;Coming Soon&rdquo; status filter manually &mdash; that&rsquo;s the canonical fallback.
+  </div>
+
+  <!-- BROKERAGE COMING-SOON / PRE-MARKET -->
+  <h2>Brokerage Coming Soon &amp; the public slice of private exclusives <span class="pill">Closest to true pre-market</span></h2>
+  <p class="lede">These are the brokerage feeds where pre-MLS inventory most often surfaces to the public. Compass &ldquo;Exclusives&rdquo; is the single most valuable public-facing pre-market source in this market.</p>
+
+  <div class="broker-grid">
+
+    <div class="broker">
+      <h3>Compass &mdash; Coming Soon + Exclusives</h3>
+      <span class="tag">Strongest public pre-market signal</span>
+      <p>Combined filter URL pulls Compass Coming Soon AND the public-facing slice of Compass Private Exclusives in one view. With $400K&ndash;$1.5M price filter baked in.</p>
+      <div class="links">
+        <a href="https://www.compass.com/homes-for-sale/downers-grove-township-dupage-county-il/price=400000-1500000/listing-type=coming-soon,exclusive/" target="_blank" rel="noopener">DG Township</a>
+        <a href="https://www.compass.com/homes-for-sale/downers-grove-il/price=400000-1500000/listing-type=coming-soon,exclusive/" target="_blank" rel="noopener">Downers Grove</a>
+        <a href="https://www.compass.com/homes-for-sale/hinsdale-il/price=400000-1500000/listing-type=coming-soon,exclusive/" target="_blank" rel="noopener">Hinsdale</a>
+        <a href="https://www.compass.com/homes-for-sale/clarendon-hills-il/price=400000-1500000/listing-type=coming-soon,exclusive/" target="_blank" rel="noopener">Clarendon Hills</a>
+        <a href="https://www.compass.com/homes-for-sale/westmont-il/price=400000-1500000/listing-type=coming-soon,exclusive/" target="_blank" rel="noopener">Westmont</a>
+        <a href="https://www.compass.com/homes-for-sale/lisle-il/price=400000-1500000/listing-type=coming-soon,exclusive/" target="_blank" rel="noopener">Lisle</a>
+        <a href="https://www.compass.com/homes-for-sale/woodridge-il/price=400000-1500000/listing-type=coming-soon,exclusive/" target="_blank" rel="noopener">Woodridge</a>
+      </div>
+    </div>
+
+    <div class="broker">
+      <h3>@properties Christie&rsquo;s &mdash; Downers Grove</h3>
+      <span class="tag">PLN is agent-only; this page shows public listings</span>
+      <p>The @properties Private Listing Network (PLN) is not publicly searchable, but the Downers Grove neighborhood page surfaces newly active and DG-area listings from one of the deepest local brokerages.</p>
+      <div class="links">
+        <a href="https://www.atproperties.com/chicagoland/neighborhoods/il/downers-grove" target="_blank" rel="noopener">DG neighborhood</a>
+        <a href="https://www.atproperties.com/chicagoland/offices/downers-grove" target="_blank" rel="noopener">DG office</a>
+        <a href="https://www.atproperties.com/chicagoland/neighborhoods/il/hinsdale" target="_blank" rel="noopener">Hinsdale</a>
+      </div>
+    </div>
+
+    <div class="broker">
+      <h3>Glover Team &mdash; published Private Listings</h3>
+      <span class="tag">Self-published off-market page</span>
+      <p>The Glover Team (Sabrina Glover, Platinum Partners) publishes a public &ldquo;Downers Grove Private Listing&rdquo; page. One of the few local teams that openly markets off-market inventory to the public.</p>
+      <div class="links">
+        <a href="https://thegloverteam.com/properties/downers-grove-private-listing-1" target="_blank" rel="noopener">Private Listing page</a>
+        <a href="https://thegloverteam.com/" target="_blank" rel="noopener">Glover Team home</a>
+      </div>
+    </div>
+
+    <div class="broker">
+      <h3>Rob Brannigan &mdash; @properties</h3>
+      <span class="tag">Specializes in off-market</span>
+      <p>Self-describes &ldquo;off-market or private listings&rdquo; as a specialty. His personal site occasionally surfaces his own coming-soon inventory. Best agent on the prior shortlist for pocket-listing access.</p>
+      <div class="links">
+        <a href="https://robbrannigan.com/" target="_blank" rel="noopener">Personal site</a>
+        <a href="https://www.atproperties.com/agents/7597/rob-brannigan" target="_blank" rel="noopener">@properties profile</a>
+      </div>
+    </div>
+
+    <div class="broker">
+      <h3>Bryan Bomba Group &mdash; @properties</h3>
+      <span class="tag">Senior buyer specialist has &ldquo;not yet on market&rdquo; access</span>
+      <p>Team page periodically lists coming-soon and tear-down inventory across Hinsdale, Clarendon Hills, and DG.</p>
+      <div class="links">
+        <a href="https://www.atproperties.com/teams/524/bryan-bomba-group" target="_blank" rel="noopener">Team page</a>
+        <a href="https://www.atproperties.com/agents/BryanBombaGroup" target="_blank" rel="noopener">Listings</a>
+      </div>
+    </div>
+
+    <div class="broker">
+      <h3>Driscoll Crisp Team &mdash; Platinum Partners</h3>
+      <span class="tag amber">No corporate PLN &mdash; check page directly</span>
+      <p>Independent local brokerage on Main St downtown DG. Public &ldquo;Properties for Sale&rdquo; page sometimes lists pre-MLS local inventory.</p>
+      <div class="links">
+        <a href="https://driscollcrisp.com/properties/sale" target="_blank" rel="noopener">Properties for sale</a>
+        <a href="https://driscollcrisp.com/properties/sold" target="_blank" rel="noopener">Sold (track velocity)</a>
+      </div>
+    </div>
+
+    <div class="broker">
+      <h3>Baird &amp; Warner &mdash; Downers Grove office</h3>
+      <span class="tag amber">Internal &ldquo;coming soon&rdquo; &mdash; partially public</span>
+      <p>Baird &amp; Warner has internal pre-MLS inventory; the office page surfaces some of it publicly.</p>
+      <div class="links">
+        <a href="https://www.bairdwarner.com/downersgroveoffice" target="_blank" rel="noopener">DG office page</a>
+      </div>
+    </div>
+
+    <div class="broker">
+      <h3>Coldwell Banker &mdash; DG / DuPage</h3>
+      <span class="tag amber">Exclusive Look &mdash; mostly agent-only</span>
+      <p>Coldwell Banker&rsquo;s &ldquo;Exclusive Look&rdquo; pre-market program is largely agent-side, but their public site shows actives and some pre-list inventory.</p>
+      <div class="links">
+        <a href="https://www.coldwellbankerhomes.com/il/downers-grove/" target="_blank" rel="noopener">DG search</a>
+      </div>
+    </div>
+
+    <div class="broker">
+      <h3>Mary Braatz &mdash; RE/MAX Enterprises</h3>
+      <span class="tag amber">No corporate PLN</span>
+      <p>39-year DG specialist. Site occasionally surfaces local coming-soon. Best to follow her listings page and call directly for pre-market inquiries.</p>
+      <div class="links">
+        <a href="https://www.marybraatz.com/" target="_blank" rel="noopener">Mary Braatz site</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ALERTS SETUP -->
+  <h2>One-time setup: native alerts on each platform</h2>
+  <p class="lede">A 15-minute setup that turns every site above into a push or email alert. Do this once, then the dashboard becomes a backup.</p>
+
+  <div class="alerts">
+    <div class="card">
+      <h3>Zillow saved search</h3>
+      <ol>
+        <li>Open each city&rsquo;s Coming Soon page from the grid above</li>
+        <li>Apply price filter $400K&ndash;$1.5M, beds 3+</li>
+        <li>Click &ldquo;Save search&rdquo; (top right)</li>
+        <li>Set frequency to <strong>Instant</strong></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Redfin instant alerts</h3>
+      <ol>
+        <li>Open Redfin coming-soon link, apply filters</li>
+        <li>Click &ldquo;Save Search&rdquo;</li>
+        <li>Choose <strong>&ldquo;As soon as possible&rdquo;</strong> &mdash; Redfin notifies within minutes of MLS status change</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Compass collection</h3>
+      <ol>
+        <li>Create a free Compass account</li>
+        <li>Save the Compass Coming Soon + Exclusives URL as a &ldquo;Collection&rdquo;</li>
+        <li>Email digests are daily; agent invite required for full Private Exclusives</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Realtor.com saved search</h3>
+      <ol>
+        <li>Open the Realtor.com Coming Soon link</li>
+        <li>Apply filters, click &ldquo;Save search&rdquo;</li>
+        <li>Choose <strong>Real-time notifications</strong></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- WHAT'S NOT IN HERE -->
+  <h2 id="not-public">What this dashboard does NOT cover (and how to access it)</h2>
+  <div class="ix">
+    <strong>True pocket listings are not in any public feed.</strong> By definition. The dashboard above only sees the public-facing slice of pre-market inventory &mdash; mostly MLS &ldquo;Coming Soon&rdquo; status (which is a regulated 24&ndash;48 hour pre-list window) plus the small public window into Compass Exclusives and a few self-published brokerage pages.
+  </div>
+
+  <p style="font-size:14px">To access the actual private/pocket listings &mdash; the deals that never hit MLS &mdash; the only mechanism is an agent relationship at a brokerage with a private listing network. Specifically:</p>
+  <ul style="font-size:14px">
+    <li><strong>@properties Private Listing Network (PLN)</strong> &mdash; visible only to @properties agents and their registered buyer clients. Engage Rob Brannigan, Patty Wardlow / Wardlow Group, or the Bryan Bomba Group to get access.</li>
+    <li><strong>Compass Private Exclusives</strong> &mdash; the full set (not just the public slice in this dashboard) is accessible through any of the 68 Compass agents in Downers Grove with a signed buyer agreement.</li>
+    <li><strong>Coldwell Banker Exclusive Look</strong> &mdash; agent-only; requires buyer-broker agreement.</li>
+    <li><strong>Local independent brokerages</strong> (Platinum Partners, RE/MAX Enterprises) &mdash; no corporate PLN, but they often see pocket inventory through informal agent-to-agent networks. The Glover Team is unusual in publishing a public &ldquo;Private Listing&rdquo; page; most don&rsquo;t.</li>
+    <li><strong>NAR &ldquo;Multiple Listing Options for Sellers&rdquo;</strong> (March 2025 policy) formally allows sellers to delay MLS syndication. This means more inventory is going the off-market route in 2026, which raises the value of having an agent inside one of the networks above.</li>
+  </ul>
+
+  <!-- METHODOLOGY -->
+  <h2>Methodology &amp; sources</h2>
+  <div class="card">
+    <p style="font-size:13px;margin:6px 0"><strong>Geographic scope:</strong> Downers Grove and 5 adjacent suburbs &mdash; Westmont, Hinsdale, Clarendon Hills, Lisle, Woodridge. Chosen because pocket inventory frequently crosses these boundaries and shares the same buyer pool.</p>
+    <p style="font-size:13px;margin:6px 0"><strong>Price scope:</strong> $400K&ndash;$1.5M. Q1 2026 DG median single-family was $607K; this band brackets the mid-to-upper market without going into deep luxury.</p>
+    <p style="font-size:13px;margin:6px 0"><strong>How the links work:</strong> Each link uses each site&rsquo;s public Coming Soon URL pattern. Compass URLs include the $400K&ndash;$1.5M price filter because Compass&rsquo;s URL schema is stable. Other sites have less stable URL filters &mdash; apply price/beds filter once after clicking, then save the search.</p>
+    <p style="font-size:13px;margin:6px 0"><strong>Sources for brokerage PLN classification:</strong> Compass press materials (compass.com/private-exclusives), @properties brokerage documentation, NAR March 2025 &ldquo;Multiple Listing Options for Sellers&rdquo; policy, and industry coverage of Clear Cooperation.</p>
+    <p style="font-size:13px;margin:6px 0"><strong>What to do if a link 404s:</strong> Each site occasionally renames URL paths. Go to the site&rsquo;s main page, search the city, apply the Coming Soon status filter manually &mdash; that&rsquo;s the canonical fallback. Then update the bookmark.</p>
+  </div>
+
+  <footer>
+    Built May 2026 &middot; Curated by Ryan Brody, MRJ CPA &middot; Public-data dashboard, no scraping, no live feeds &middot; Verify each link the first time you use it.
+  </footer>
+
+</div>
+
+<script>
+function copyShareLink() {
+  var btn = document.getElementById('shareBtn');
+  var label = document.getElementById('shareBtnText');
+  var url = window.location.href;
+  function showCopied() {
+    btn.classList.add('copied');
+    var prev = label.textContent;
+    label.textContent = 'Link copied!';
+    setTimeout(function() { btn.classList.remove('copied'); label.textContent = prev; }, 1800);
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(showCopied).catch(function() {
+      fallbackCopy(url, showCopied);
+    });
+  } else {
+    fallbackCopy(url, showCopied);
+  }
+}
+function fallbackCopy(text, done) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed'; ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch(e) { window.prompt('Copy this link:', text); }
+  document.body.removeChild(ta);
+}
+</script>
+
+</body>
+</html>
